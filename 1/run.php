@@ -1,5 +1,6 @@
+#!/usr/bin/php
 <?php
-	$floors = file_get_contents('input.txt');
+	$floors = trim(file_get_contents('php://STDIN'));
 	$char = 0;
 	$floor = 0;
 	$basement = false;

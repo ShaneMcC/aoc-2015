@@ -1,7 +1,6 @@
+#!/usr/bin/php
 <?php
-
-	$lines = file('input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-//	$lines = file('test.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$lines = file('php://STDIN', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$total = 0;
 	$ribbontotal = 0;
 	foreach ($lines as $line) {
