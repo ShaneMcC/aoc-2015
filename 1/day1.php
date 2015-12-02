@@ -1,10 +1,9 @@
 <?php
-
-	$FLOORS = file_get_contents('input.txt');
+	$floors = file_get_contents('input.txt');
 	$char = 0;
 	$floor = 0;
 	$basement = false;
-	foreach (str_split($FLOORS) as $bit) {
+	foreach (str_split($floors) as $bit) {
 		if (!$basement) { $char++; }
 		if ($bit == ')') {
 			$floor--;
