@@ -1,42 +1,40 @@
 #!/usr/bin/php
 <?php
-	function run($directions, $robot = false) {
-		$x = array('s' => 0, 'r' => 0);
-		$y = array('s' => 0, 'r' => 0);
-		$presents = array();
-		$who = 's';
-
-		// Starting house gets 2 presents.
-		$presents[$x[$who]][$y[$who]] = 2;
+	function run($directions, $people = 1) {
+		// Create initial locations and deliver first present.
+		$x = $y = array();
+		$presents = array(0 => array(0 => 0));
+		for ($i = 0; $i < $people; $i++) {
+			$presents[0][0]++;
+			$x[$i] = $y[$i] = 0;
+		}
 		$houses = 1;
 
+		$person = 0;
 		foreach (str_split($directions) as $bit) {
 			// Move
-			if ($bit == '^') { $y[$who]++; }
-			else if ($bit == 'v') { $y[$who]--; }
-			else if ($bit == '>') { $x[$who]++; }
-			else if ($bit == '<') { $x[$who]--; }
+			if ($bit == '^') { $y[$person]++; }
+			else if ($bit == 'v') { $y[$person]--; }
+			else if ($bit == '>') { $x[$person]++; }
+			else if ($bit == '<') { $x[$person]--; }
 
 			// Create a house if one doesn't already exist
-			if (!isset($presents[$x[$who]][$y[$who]])) {
-				$presents[$x[$who]][$y[$who]] = 0;
+			if (!isset($presents[$x[$person]][$y[$person]])) {
+				$presents[$x[$person]][$y[$person]] = 0;
 				$houses++;
 			}
 
 			// Deliver a present.
-			$presents[$x[$who]][$y[$who]]++;
+			$presents[$x[$person]][$y[$person]]++;
 
 			// Alternate who delivers.
-			if ($robot) { $who = ($who == 's') ? 'r' : 's'; }
+			$person = ($person + 1) % $people;
 		}
 
-//		var_dump($presents);
-//		echo "\n\n";
 		return $houses;
 	}
 
 	$directions = trim(file_get_contents('php://STDIN'));
-	echo 'Houses with presents year 1: ', run($directions, false), "\n";
-	echo 'Houses with presents year 2: ', run($directions, true), "\n";
+	echo 'Houses with presents (Santa Only): ', run($directions, 1), "\n";
+	echo 'Houses with presents (Santa + Robo Santa): ', run($directions, 2), "\n";
 
-?>
