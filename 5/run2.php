@@ -7,7 +7,7 @@
 
 
 	function isNicePart2($word) {
-		return preg_match('/.*(..).*\1.*/', $word, $foo) && preg_match('/.*(.).\1.*/', $word);
+		return preg_match('/(..).*\1/', $word, $foo) && preg_match('/(.).\1/', $word);
 	}
 
 
