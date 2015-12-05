@@ -2,7 +2,7 @@
 <?php
 
 	function isNicePart1($word) {
-		return preg_match('/.*[aeiou].*[aeiou].*[aeiou].*/', $word) && !preg_match('/.*(ab|cd|pq|xy).*/', $word) && preg_match('/.*(.)\1.*/', $word);
+		return preg_match('/(.*[aeiou]){3}/', $word) && !preg_match('/(ab|cd|pq|xy)/', $word) && preg_match('/.*(.)\1.*/', $word);
 	}
 
 
