@@ -21,13 +21,13 @@
 
 			if (isset($instructions[$instruction])) {
 				$instruction = $instructions[$instruction];
-			} else { contiune; }
+			} else { continue; }
 
 			for ($x = $x1; $x <= $x2; $x++) {
 				for ($y = $y1; $y <= $y2; $y++) {
 					$loc = $x . ',' . $y;
 
-					$lights[$loc] = $instruction($lights[$loc]);
+					$instruction($lights[$loc]);
 				}
 			}
 		}
@@ -35,14 +35,14 @@
 		return $lights;
 	}
 
-	$part1 = array('turn on' => function($val) { return 1; },
-		           'turn off' => function($val) { return 0; },
-		           'toggle' => function($val) { return 1 - $val; },
+	$part1 = array('turn on' => function(&$val) { $val = 1; },
+		           'turn off' => function(&$val) { $val = 0; },
+		           'toggle' => function(&$val) { $val = 1 - $val; },
 	              );
 
-	$part2 = array('turn on' => function($val) { return $val += 1; },
-		           'turn off' => function($val) { return max(0, $val - 1); },
-		           'toggle' => function($val) { return $val += 2; },
+	$part2 = array('turn on' => function(&$val) { $val += 1; },
+		           'turn off' => function(&$val) { $val = max(0, $val - 1); },
+		           'toggle' => function(&$val) { $val += 2; },
 	              );
 
 	$lights = doLights($lines, $part1);
