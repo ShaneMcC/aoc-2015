@@ -73,9 +73,47 @@
 		return isset($__CLIOPTS['t']) || isset($__CLIOPTS['test']);
 	}
 
+	/**
+	 * Get an ascii Wreath as a string.
+	 *
+	 * @param $colour Colourise the wreath.
+	 * @return The wreath
+	 */
+	function getWreath($colour = true) {
+			$canColour = $colour && (function_exists('posix_isatty') && posix_isatty(STDOUT)) || getenv('ANSICON') !== FALSE;
+
+			if ($canColour) {
+				$name = "\033[0m";
+				$wreath = "\033[0;32m";
+				$bow = "\033[1;31m";
+				$berry = "\033[1;31m";
+				$reset = "\033[0m";
+			} else {
+				$reset = $berry = $bow = $wreath = $name = '';
+			}
+
+			return <<<WREATH
+$wreath           ,....,
+$wreath        ,;;:${berry}o$wreath;;;${berry}o$wreath;;,
+$wreath      ,;;${berry}o$wreath;'''''';;;;,
+$wreath     ,;:;;        ;;${berry}o$wreath;,
+$wreath     ;${berry}o$wreath;;          ;;;;
+$wreath     ;;${berry}o$wreath;          ;;${berry}o$wreath;
+$wreath     ';;;,  ${bow}_  _$wreath  ,;;;'
+$wreath      ';${berry}o$wreath;;$bow/_\/_\\$wreath;;${berry}o$wreath;'
+$name  jgs $wreath  ';;$bow\_\/_/$wreath;;'
+$bow           '//\\\'
+$bow           //  \\\ $reset  Advent of Code 2015
+$bow          |/    \| $reset - ShaneMcC
+$reset
+
+WREATH;
+	}
+
 	try {
-		$__CLIOPTS = @getopt("hdt", array('help', 'file:', 'debug', 'test'));
+		$__CLIOPTS = @getopt("hdtw", array('help', 'file:', 'debug', 'test'));
 		if (isset($__CLIOPTS['h']) || isset($__CLIOPTS['help'])) {
+			echo getWreath(), "\n";
 			echo 'Usage: ', $_SERVER['argv'][0], ' [options]', "\n";
 			echo '', "\n";
 			echo 'Valid options', "\n";
@@ -88,3 +126,4 @@
 			die();
 		}
 	} catch (Exception $e) { /* Do nothing. */ }
+	if (!isset($__CLIOPTS['w'])) { echo getWreath(), "\n"; }
