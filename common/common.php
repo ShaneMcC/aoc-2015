@@ -73,4 +73,18 @@
 		return isset($__CLIOPTS['t']) || isset($__CLIOPTS['test']);
 	}
 
-	try { $__CLIOPTS = @getopt("dt", array('file:', 'debug', 'test')); } catch (Exception $e) { /* Do nothing. */ }
+	try {
+		$__CLIOPTS = @getopt("hdt", array('help', 'file:', 'debug', 'test'));
+		if (isset($__CLIOPTS['h']) || isset($__CLIOPTS['help'])) {
+			echo 'Usage: ', $_SERVER['argv'][0], ' [options]', "\n";
+			echo '', "\n";
+			echo 'Valid options', "\n";
+			echo '  -h, --help               Show this help output', "\n";
+			echo '  -t, --test               Enable test mode (default to reading input from test.txt not input.txt)', "\n";
+			echo '  -d, --debug              Enable debug mode', "\n";
+			echo '      --file <file>        Read input from <file>', "\n";
+			echo '', "\n";
+			echo 'Input will be read from STDIN in preference to either <file> or the default files.', "\n";
+			die();
+		}
+	} catch (Exception $e) { /* Do nothing. */ }
