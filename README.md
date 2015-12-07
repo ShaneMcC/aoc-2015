@@ -1,5 +1,21 @@
 # Advent of Code 2015
 
+```
+           ,....,
+        ,;;:o;;;o;;,
+      ,;;o;'''''';;;;,
+     ,;:;;        ;;o;,
+     ;o;;          ;;;;
+     ;;o;          ;;o;
+     ';;;,  _  _  ,;;;'
+      ';o;;/_\/_\;;o;'
+  jgs   ';;\_\/_/;;'
+           '//\\'
+           //  \\
+          |/    \|
+
+```
+
 My (Hacky) PHP Solutions for [http://adventofcode.com](http://adventofcode.com)
 
 I may tidy up some of the more interesting ones.
