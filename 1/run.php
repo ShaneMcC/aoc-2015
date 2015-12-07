@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
-	$floors = trim(file_get_contents(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt'));
+	require_once(dirname(__FILE__) . '/../common/common.php');
+	$floors = getInputLine();
+
 	$char = 0;
 	$floor = 0;
 	$basement = false;

@@ -1,9 +1,7 @@
 #!/usr/bin/php
 <?php
-	// *Whistles*
-	ini_set('memory_limit', '-1');
-
-	$lines = file(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	require_once(dirname(__FILE__) . '/../common/common.php');
+	$lines = getInputLines();
 
 	function doLights($lines, $instructions) {
 		$startMemory = memory_get_usage();

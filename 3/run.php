@@ -1,5 +1,8 @@
 #!/usr/bin/php
 <?php
+	require_once(dirname(__FILE__) . '/../common/common.php');
+	$directions = getInputLine();
+
 	function run($directions, $people = 1) {
 		// Create initial locations and deliver first present.
 		$x = $y = array();
@@ -34,7 +37,6 @@
 		return $houses;
 	}
 
-	$directions = trim(file_get_contents(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt'));
 	echo 'Houses with presents (Santa Only): ', run($directions, 1), "\n";
 	echo 'Houses with presents (Santa + Robo Santa): ', run($directions, 2), "\n";
 

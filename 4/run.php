@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
-
-	$input = trim(file_get_contents(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt'));
+	require_once(dirname(__FILE__) . '/../common/common.php');
+	$input = getInputLine();
 
 	function findHash($input, $match) {
 		echo "\n";

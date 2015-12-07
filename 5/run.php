@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+	require_once(dirname(__FILE__) . '/../common/common.php');
+	$lines = getInputLines();
 
 	function isNicePart1($word) {
 		$vowels = array('a', 'e', 'i', 'o', 'u');
@@ -39,7 +41,7 @@
 	}
 
 
-	$lines = file(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
 	$count1 = $count2 = 0;
 	foreach ($lines as $line) {
 		$result1 = isNicePart1($line);
