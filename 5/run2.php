@@ -9,7 +9,7 @@
 		return preg_match('/(..).*\1/', $word, $foo) && preg_match('/(.).\1/', $word);
 	}
 
-	$lines = file('php://STDIN', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$lines = file(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$count1 = $count2 = 0;
 	foreach ($lines as $line) {
 		$result1 = isNicePart1($line);

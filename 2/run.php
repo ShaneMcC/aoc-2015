@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	$lines = file('php://STDIN', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$lines = file(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$total = 0;
 	$ribbontotal = 0;
 	foreach ($lines as $line) {

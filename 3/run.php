@@ -34,7 +34,7 @@
 		return $houses;
 	}
 
-	$directions = trim(file_get_contents('php://STDIN'));
+	$directions = trim(file_get_contents(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt'));
 	echo 'Houses with presents (Santa Only): ', run($directions, 1), "\n";
 	echo 'Houses with presents (Santa + Robo Santa): ', run($directions, 2), "\n";
 

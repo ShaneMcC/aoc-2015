@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	$floors = trim(file_get_contents('php://STDIN'));
+	$floors = trim(file_get_contents(!posix_isatty(STDIN) ? 'php://stdin' : dirname(__FILE__) . '/input.txt'));
 	$char = 0;
 	$floor = 0;
 	$basement = false;
