@@ -11,9 +11,8 @@
       ';o;;/_\/_\;;o;'
   jgs   ';;\_\/_/;;'
            '//\\'
-           //  \\
-          |/    \|
-
+           //  \\   Advent of Code 2015
+          |/    \|  - ShaneMcC
 ```
 
 My (Hacky) PHP Solutions for [http://adventofcode.com](http://adventofcode.com)
