@@ -5,7 +5,7 @@
 
 	$lines = file('php://STDIN', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-	function doLights($lines, $part1 = true) {
+	function doLights($lines, $instructions) {
 		$startMemory = memory_get_usage();
 
 		$lights = [];
@@ -23,20 +23,8 @@
 				for ($y = $y1; $y <= $y2; $y++) {
 					$loc = $x . ',' . $y;
 
-					if ($part1) {
-						if ($instruction == 'turn on' || ($instruction == 'toggle' && $lights[$loc] == 0)) {
-							$lights[$loc] = 1;
-						} else if ($instruction == 'turn off' || ($instruction == 'toggle' && $lights[$loc] == 1)) {
-							$lights[$loc] = 0;
-						}
-					} else {
-						if ($instruction == 'turn on') {
-							$lights[$loc]++;
-						} else if ($instruction == 'turn off' && $lights[$loc] > 0) {
-							$lights[$loc]--;
-						} else if ($instruction == 'toggle') {
-							$lights[$loc] += 2;
-						}
+					if (isset($instructions[$instruction])) {
+						$lights[$loc] = $instructions[$instruction]($lights[$loc]);
 					}
 				}
 			}
@@ -45,9 +33,19 @@
 		return $lights;
 	}
 
-	$lights = doLights($lines, true);
+	$part1 = array('turn on' => function($val) { return 1; },
+		           'turn off' => function($val) { return 0; },
+		           'toggle' => function($val) { return 1 - $val; },
+	              );
+
+	$part2 = array('turn on' => function($val) { return $val += 1; },
+		           'turn off' => function($val) { return max(0, $val - 1); },
+		           'toggle' => function($val) { return $val += 2; },
+	              );
+
+	$lights = doLights($lines, $part1);
 	echo 'Lights on: ', array_sum($lights), "\n";
 
-	$lights = doLights($lines, false);
+	$lights = doLights($lines, $part2);
 	echo 'Lights brightness: ', array_sum($lights), "\n";
 
