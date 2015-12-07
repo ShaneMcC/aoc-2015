@@ -71,6 +71,7 @@
 			// Do stuff.
 			if ($action == 'AND') { $final = ($input & $value); }
 			else if ($action == 'OR') { $final = ($input | $value); }
+			else if ($action == 'XOR') { $final = ($input ^ $value); }
 			else if ($action == 'NOT') { $final = (~ $value & 0xFFFF); }
 			else if ($action == 'LSHIFT') { $final = ($input << $value); }
 			else if ($action == 'RSHIFT') { $final = ($input >> $value); }
