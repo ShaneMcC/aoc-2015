@@ -4,22 +4,22 @@
 	$input = getInputLine();
 
 	function findHash($input, $match) {
-		echo "\n";
 		$i = 0;
 		$hash = '';
+
+		echo 'Input: ', $input, "\n";
+		echo 'Match: ', $match, "\n";
+
 		while (true) {
 			$hash = md5($input . $i);
-			printf("\r%.9d (%s)", $i, $hash);
+			printf("\rNumber: %d (%s)", $i, $hash);
 			if (stripos($hash, $match) === 0) { break; }
 			$i++;
 		}
 
-		echo "\n\n";
-		echo 'Input: ', $input, "\n";
-		echo 'Match: ', $match, "\n";
-		echo 'Number: ', $i, "\n";
-		echo 'Final Hash: ', $hash, "\n";
+		echo "\n";
 	}
 
 	findHash($input, '00000');
+	echo "\n\n";
 	findHash($input, '000000');
