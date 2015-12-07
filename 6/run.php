@@ -19,13 +19,15 @@
 			preg_match('#(turn (?:on|off)|toggle) ([0-9]+),([0-9]+) through ([0-9]+),([0-9]+)#', $line, $matches);
 			list($full, $instruction, $x1, $y1, $x2, $y2) = $matches;
 
+			if (isset($instructions[$instruction])) {
+				$instruction = $instructions[$instruction];
+			} else { contiune; }
+
 			for ($x = $x1; $x <= $x2; $x++) {
 				for ($y = $y1; $y <= $y2; $y++) {
 					$loc = $x . ',' . $y;
 
-					if (isset($instructions[$instruction])) {
-						$lights[$loc] = $instructions[$instruction]($lights[$loc]);
-					}
+					$lights[$loc] = $instruction($lights[$loc]);
 				}
 			}
 		}
