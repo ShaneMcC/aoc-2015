@@ -74,6 +74,18 @@
 	}
 
 	/**
+	 * array_sum on multi-dimensional arrays.
+	 *
+	 * @param $array Array to sum.
+	 * @return Sum of all vaules in array.
+	 */
+	function multi_array_sum($array) {
+		$result = 0;
+		foreach ($array as $a) { $result += (is_array($a) ? multi_array_sum($a) : $a); }
+		return $result;
+	}
+
+	/**
 	 * Get an ascii Wreath as a string.
 	 *
 	 * @param $colour Colourise the wreath.

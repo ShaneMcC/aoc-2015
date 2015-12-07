@@ -46,12 +46,6 @@
 		           'toggle' => function(&$val) { $val += 2; },
 	              );
 
-	function multi_array_sum($array) {
-		$result = 0;
-		foreach ($array as $a) { $result += array_sum($a); }
-		return $result;
-	}
-
 	$lights = doLights($lines, $part1);
 	echo 'Lights on: ', multi_array_sum($lights), "\n";
 
