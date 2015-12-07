@@ -5,11 +5,9 @@
 		return preg_match('/(.*[aeiou]){3}/', $word) && !preg_match('/(ab|cd|pq|xy)/', $word) && preg_match('/.*(.)\1.*/', $word);
 	}
 
-
 	function isNicePart2($word) {
 		return preg_match('/(..).*\1/', $word, $foo) && preg_match('/(.).\1/', $word);
 	}
-
 
 	$lines = file('php://STDIN', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$count1 = $count2 = 0;
