@@ -3,88 +3,147 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$lines = getInputLines();
 
-	function process($lines) {
-		$gates = array();
+	/**
+	 * Logic Gates.
+	 */
+	class LogicGates {
+		/** Store our gates. */
+		private $gates = array();
 
-		foreach ($lines as $line) {
-			if (preg_match('#(.*) (OR|AND|LSHIFT|RSHIFT) (.*) -> (.*)#SAD', $line, $matches)) {
-				list($all, $input, $action, $value, $gate) = $matches;
-			} else if (preg_match('#(NOT) (.*) -> (.*)#SAD', $line, $matches)) {
-				list($all, $action, $value, $gate) = $matches;
-				$input = null;
-			} else if (preg_match('#(.*) -> (.*)#SAD', $line, $matches)) {
-				list($all, $value, $gate) = $matches;
-				$action = 'SET';
-				$input = null;
+		/**
+		 * Create a new LogicGates class from the given list of connections.
+		 *
+		 * @param $connections List of connections.
+		 */
+		public function __construct($connections = array()) {
+			foreach ($connections as $line) {
+				if (preg_match('#(?:(.*)( OR| AND| LSHIFT| RSHIFT|NOT) )?(.*) -> (.*)#SAD', $line, $matches)) {
+					list($all, $input, $action, $value, $gate) = $matches;
+				}
+				$this->set($gate, $value, $action, $input);
+			}
+		}
+
+		/**
+		 * Check if we know about a given gate.
+		 *
+		 * @param $gate Gate to check
+		 * @return True if this is a valid gate, else false.
+		 */
+		public function has($gate) {
+			return isset($this->gates[$gate]);
+		}
+
+		/**
+		 * Get a list of known gates.
+		 *
+		 * @return List of known gates.
+		 */
+		public function gates() {
+			$result = array_keys($this->gates);
+			sort($result);
+			return $result;
+		}
+
+		/**
+		 * Get the value for a gate.
+		 *
+		 * If $gate is not a valid gate then it is assumed to be a raw value and
+		 * is returned as-is.
+		 * Values for gates are calculated lazily when they are first requested.
+		 *
+		 * @param $gate Gate to get value of.
+		 * @return Value of gate.
+		 */
+		public function get($gate) {
+			// If this is not a known gate, it's probably a raw value
+			if (!isset($this->gates[$gate])) { return $gate; }
+
+			// If we already know the final value for this gate, don't
+			// calculate it again.
+			if (isset($this->gates[$gate]['final'])) { return $this->gates[$gate]['final']; }
+
+			// Get the various parameters of this connection.
+			$input = isset($this->gates[$gate]['input']) ? $this->get($this->gates[$gate]['input']) : null;
+			$action = isset($this->gates[$gate]['action']) ? $this->gates[$gate]['action'] : null;
+			$value = $this->get($this->gates[$gate]['value']);
+
+			// Do stuff.
+			if ($action == 'AND') { $final = ($input & $value); }
+			else if ($action == 'OR') { $final = ($input | $value); }
+			else if ($action == 'NOT') { $final = abs((~ 65535) - (~ $value)); }
+			else if ($action == 'LSHIFT') { $final = ($input << $value); }
+			else if ($action == 'RSHIFT') { $final = ($input >> $value); }
+			else if ($action == null) { $final = $value; }
+
+			// Debugging
+			if (isDebug()) {
+				echo sprintf('%s -> %s%s%s -> %s', $gate, ($input !== null ? (int)$input. ' ' : ''), ($action !== null ? $action. ' ' : ''), $value, $final), "\n";
 			}
 
-			$gates[$gate] = array('action' => $action, 'value' => $value, 'input' => $input);
+			// Store value to save us recalculating again.
+			$this->gates[$gate]['final'] = (int)$final;
+
+			// Return new value.
+			return $this->gates[$gate]['final'];
 		}
 
-		return $gates;
+		/**
+		 * Setup $gate
+		 *
+		 * This will cause any gates that rely on this to require their value
+		 * recalculating.
+		 *
+		 * NOTE: Setting looks backwards, eg:
+		 * 	   "x AND y -> d" would be $gates->set('d', 'y', 'AND', 'x');
+		 *
+		 * @param $gate Gate to change.
+		 * @param $value Value to set gate to.
+		 * @param $action [Optional] Action for this gate.
+		 * @param $input [Optional] Input for this gate.
+		 */
+		public function set($gate, $value, $action = '', $input = '') {
+			$this->invalidate($gate);
+
+			$this->gates[$gate] = array();
+			if (!empty($input)) { $this->gates[$gate]['input'] = $input; }
+			if (!empty($action)) { $this->gates[$gate]['action'] = trim($action); }
+			$this->gates[$gate]['value'] = $value;
+		}
+
+		/**
+		 * Invalidate the calculated final value of $gate and any gates that
+		 * rely on it.
+		 *
+		 * @param $gate Gate to invalidate.
+		 */
+		private function invalidate($gate) {
+			if (isset($this->gates[$gate]['final'])) {
+				unset($this->gates[$gate]['final']);
+				foreach ($this->gates as $g => $data) {
+					if ($data['value'] == $gate || (isset($data['input']) && $data['input'] == $gate)) {
+						$this->invalidate($g);
+					}
+				}
+			}
+		}
 	}
 
-	function getValue(&$gates, $gate) {
-		if (isset($gates[$gate]['finalvalue'])) {
-			return $gates[$gate]['finalvalue'];
-		}
+	$gates = new LogicGates($lines);
 
-		$action = $gates[$gate]['action'];
-		$value = $gates[$gate]['value'];
-		$input = $gates[$gate]['input'];
-
-		$valueIsGate = preg_match('#[a-z]+#SAD', $value);
-		$value = $valueIsGate ? getValue($gates, $value) : $value;
-
-		if ($input != null) {
-			$inputIsGate = preg_match('#[a-z]+#SAD', $input);
-			$input = $inputIsGate ? getValue($gates, $input) : $input;
-		}
-
-		if ($action == 'SET') {
-			$finalValue = $value;
-		} else if ($action == 'AND') {
-			$finalValue = ($input & $value);
-		} else if ($action == 'OR') {
-			$finalValue = ($input | $value);
-		} else if ($action == 'NOT') {
-			$finalValue = abs((~ 65535) - (~ $value));
-		} else if ($action == 'LSHIFT') {
-			$finalValue = ($input << $value);
-		} else if ($action == 'RSHIFT') {
-			$finalValue = ($input >> $value);
-		} else {
-			die('Unknown');
-		}
-
-		if (isDebug()) {
-			echo sprintf('%s -> %s%s %s -> %s', $gate, ($input !== null ? (int)$input. ' ' : ''), $action, $value, $finalValue), "\n";
-		}
-
-		$gates[$gate]['finalvalue'] = (int)$finalValue;
-		return (int)$finalValue;
-	}
-
-
-	$gates = process($lines);
-
-	if (isDebug()) {
-		foreach (array_keys($gates) as $key) {
-			echo $key, ': ', getValue($gates, $key), "\n";
-		}
+	if (!isDebug()) {
+		// foreach ($gates->gates() as $gate) { echo $gate, ': ', $gates->get($gate), "\n"; }
 	}
 
 	// Actual challenge requires an 'a' gate.
-	if (isset($gates['a'])) {
+	if ($gates->has('a')) {
 		echo "\n";
 		// Original A
-		echo 'Original a: ', getValue($gates, 'a'), "\n";
-		// Store A.
-		$a = getValue($gates, 'a');
-		// Reset the gates.
-		$gates = process($lines);
+		$a = $gates->get('a');
+		echo 'Original a: ', $a, "\n";
 		// Change B
-		$gates['b'] = array('action' => 'SET', 'value' => $a, 'input' => null);
+		$gates->set('b', $a);
 		// New A
-		echo 'Second a: ', getValue($gates, 'a'), "\n";
+		echo 'Second a: ', $gates->get('a'), "\n";
 	}
+
