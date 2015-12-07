@@ -17,7 +17,7 @@
 		 */
 		public function __construct($connections = array()) {
 			foreach ($connections as $line) {
-				if (preg_match('#(?:(.*)( OR| AND| LSHIFT| RSHIFT|NOT) )?(.*) -> (.*)#SAD', $line, $matches)) {
+				if (preg_match('#(?:(?:(.*) )?(.*)? )?(.*) -> (.*)#SAD', $line, $matches)) {
 					list($all, $input, $action, $value, $gate) = $matches;
 				}
 				$this->set($gate, $value, $action, $input);
@@ -107,7 +107,7 @@
 
 			$this->gates[$gate] = array();
 			if (!empty($input)) { $this->gates[$gate]['input'] = $input; }
-			if (!empty($action)) { $this->gates[$gate]['action'] = trim($action); }
+			if (!empty($action)) { $this->gates[$gate]['action'] = $action; }
 			$this->gates[$gate]['value'] = $value;
 		}
 
@@ -137,7 +137,6 @@
 
 	// Actual challenge requires an 'a' gate.
 	if ($gates->has('a')) {
-		echo "\n";
 		// Original A
 		$a = $gates->get('a');
 		echo 'Original a: ', $a, "\n";
