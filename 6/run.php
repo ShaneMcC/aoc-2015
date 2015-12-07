@@ -11,7 +11,7 @@
 		$lights = [];
 		for ($x = 0; $x <= 999; $x++) {
 			for ($y = 0; $y <= 999; $y++) {
-				$lights[$x . ',' . $y] = 0;
+				$lights[$x][$y] = 0;
 			}
 		}
 
@@ -25,9 +25,7 @@
 
 			for ($x = $x1; $x <= $x2; $x++) {
 				for ($y = $y1; $y <= $y2; $y++) {
-					$loc = $x . ',' . $y;
-
-					$instruction($lights[$loc]);
+					$instruction($lights[$x][$y]);
 				}
 			}
 		}
@@ -45,9 +43,15 @@
 		           'toggle' => function(&$val) { $val += 2; },
 	              );
 
+	function multi_array_sum($array) {
+		$result = 0;
+		foreach ($array as $a) { $result += array_sum($a); }
+		return $result;
+	}
+
 	$lights = doLights($lines, $part1);
-	echo 'Lights on: ', array_sum($lights), "\n";
+	echo 'Lights on: ', multi_array_sum($lights), "\n";
 
 	$lights = doLights($lines, $part2);
-	echo 'Lights brightness: ', array_sum($lights), "\n";
+	echo 'Lights brightness: ', multi_array_sum($lights), "\n";
 
