@@ -14,10 +14,12 @@
 			$floor++;
 		}
 		if ($floor <= -1) { $basement = true; }
-		echo $bit, ' => ', $floor, "\n";
+		if (isDebug()) {
+			echo $bit, ' => ', $floor, "\n";
+		}
 	}
 
-	echo "\n\n";
+	if (isDebug()) { echo "\n\n"; }
 
 	echo 'Final Floor: ', $floor, "\n";
 	echo 'First basement: ', $char, "\n";

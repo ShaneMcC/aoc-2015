@@ -16,9 +16,11 @@
 		$ribbon = ($dim[0]*2) + ($dim[1]*2) + ($l*$w*$h);
 		$ribbontotal += $ribbon;
 
-		echo sprintf('[%dx%dx%d] %d + %d = %d [%d] {%d => %d}', $l, $w, $h, $paper, $slack, ($paper+$slack), $total, $ribbon, $ribbontotal), "\n";
+		if (isDebug()) {
+			echo sprintf('[%dx%dx%d] %d + %d = %d [%d] {%d => %d}', $l, $w, $h, $paper, $slack, ($paper+$slack), $total, $ribbon, $ribbontotal), "\n";
+		}
 	}
 
-	echo "\n\n";
+	if (isDebug()) { echo "\n\n"; }
 	echo 'Total: ', $total, "\n";
 	echo 'Ribbon: ', $ribbontotal, "\n";

@@ -4,7 +4,7 @@
 	$lines = getInputLines();
 
 	function doLights($lines, $instructions) {
-		$startMemory = memory_get_usage();
+		$debug = isDebug();
 
 		$lights = [];
 		for ($x = 0; $x <= 999; $x++) {
@@ -23,7 +23,12 @@
 
 			for ($x = $x1; $x <= $x2; $x++) {
 				for ($y = $y1; $y <= $y2; $y++) {
+					if ($debug) { $old = $lights[$x][$y]; }
 					$instruction($lights[$x][$y]);
+
+					if ($debug) {
+						echo sprintf('"%s" changed "%d,%d" from "%d" to "%d"', $full, $old, $x, $y, $lights[$x][$y]), "\n";
+					}
 				}
 			}
 		}
