@@ -74,7 +74,7 @@
 			$route = array();
 			$distance = 0;
 			$last = null;
-			for ($i = 1; $ < count($journey); $i++) {
+			for ($i = 1; $i < count($journey); $i++) {
 				$route[] = array('source' => $journey[$i-1], 'destination' => $journey[$i], 'distance' => $places[$journey[$i-1]][$journey[$i]]);
 				$distance += $places[$journey[$i-1]][$journey[$i]];
 			}
