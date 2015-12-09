@@ -49,8 +49,8 @@
 	}
 	usort($possible, 'sortByDistance');
 	echo "\n\n";
-	echo 'Shortest Route: ', print_route($possible[0]['route']), "\n";
-	echo 'Shortest Distance: ', $possible[0]['distance'], "\n";
+	echo 'Naive Shortest Route: ', print_route($possible[0]['route']), "\n";
+	echo 'Naive Shortest Distance: ', $possible[0]['distance'], "\n";
 
 	function getPermutations($items, $perms = array( )) {
 		if (empty($items)) {
@@ -105,6 +105,9 @@
 		}
 	}
 
+	echo "\n";
+	echo 'All Shortest Route: ', print_route($possible[0]['route']), "\n";
+	echo 'All Shortest Distance: ', $possible[0]['distance'], "\n";
 	echo "\n";
 	echo 'Longest Route: ', print_route($possible[count($possible) - 1]['route']), "\n";
 	echo 'Longest Distance: ', $possible[count($possible) - 1]['distance'], "\n";
