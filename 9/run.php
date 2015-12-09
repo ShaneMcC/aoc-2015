@@ -4,18 +4,12 @@
 	$lines = getInputLines();
 
 	$places = array();
-	$journeys = array();
 	foreach ($lines as $direction) {
 		preg_match('#(.*) to (.*) = (.*)#', $direction, $matches);
-
-		$source = $matches[1];
-		$destination = $matches[2];
-		$distance = $matches[3];
-
+		list($all, $source, $destination, $distance) = $matches;
 		$places[$source][$destination] = $distance;
 		$places[$destination][$source] = $distance;
 	}
-
 	foreach ($places as $k => $v) { asort($v); $places[$k] = $v; }
 
 	function getShortJourney($start, $places) {
@@ -74,20 +68,15 @@
 		return $return;
 	}
 
-
 	function getAllRoutes($places) {
 		$routes = array();
 		foreach (getPermutations(array_keys($places)) as $journey) {
 			$route = array();
 			$distance = 0;
 			$last = null;
-			foreach ($journey as $current) {
-				if ($last != null) {
-					if (!isset($places[$last][$current])) { break; }
-					$route[] = array('source' => $last, 'destination' => $current, 'distance' => $places[$last][$current]);
-					$distance += $places[$last][$current];
-				}
-				$last = $current;
+			for ($i = 1; $ < count($journey); $i++) {
+				$route[] = array('source' => $journey[$i-1], 'destination' => $journey[$i], 'distance' => $places[$journey[$i-1]][$journey[$i]]);
+				$distance += $places[$journey[$i-1]][$journey[$i]];
 			}
 			$routes[] = array('route' => $route, 'distance' => $distance);
 		}
