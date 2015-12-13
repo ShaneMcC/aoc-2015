@@ -27,11 +27,14 @@
 	}
 
 	function getBest($people) {
-		$perms = getPermutations(array_keys($people));
+		$perms = array_keys($people);
+		$start = array_shift($perms);
+		$perms = getPermutations($perms);
 
 		$best['order'] = array();
 		$best['happiness'] = 0;
 		foreach ($perms as $p) {
+			array_unshift($p, $start);
 			$happiness = calculateHappiness($people, $p);
 
 			if ($happiness > $best['happiness']) {
@@ -43,9 +46,9 @@
 		return $best;
 	}
 
-
 	$part1 = getBest($people);
 	echo 'Part 1: ', $part1['happiness'], "\n";
+	echo "\t", 'Seating Order: ', implode(', ', $part1['order']), "\n";
 
 	$people['You'] = array();
 	foreach (array_keys($people) as $p) {
@@ -55,3 +58,4 @@
 
 	$part2 = getBest($people);
 	echo 'Part 2: ', $part2['happiness'], "\n";
+	echo "\t", 'Seating Order: ', implode(', ', $part2['order']), "\n";
