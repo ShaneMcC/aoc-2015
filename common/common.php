@@ -95,6 +95,25 @@
 	}
 
 	/**
+	 * get All the permutations of an array of items.
+	 */
+	function getPermutations($items, $perms = array( )) {
+		if (empty($items)) {
+			$return = array($perms);
+		} else {
+			$return = array();
+			for ($i = count($items) - 1; $i >= 0; --$i) {
+				$newitems = $items;
+				$newperms = $perms;
+				list($foo) = array_splice($newitems, $i, 1);
+				array_unshift($newperms, $foo);
+				$return = array_merge($return, getPermutations($newitems, $newperms));
+			}
+		}
+		return $return;
+	}
+
+	/**
 	 * Get an ascii Wreath as a string.
 	 *
 	 * @param $colour Colourise the wreath.

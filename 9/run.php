@@ -52,22 +52,6 @@
 	echo 'Naive Shortest Route: ', print_route($possible[0]['route']), "\n";
 	echo 'Naive Shortest Distance: ', $possible[0]['distance'], "\n";
 
-	function getPermutations($items, $perms = array( )) {
-		if (empty($items)) {
-			$return = array($perms);
-		} else {
-			$return = array();
-			for ($i = count($items) - 1; $i >= 0; --$i) {
-				$newitems = $items;
-				$newperms = $perms;
-				list($foo) = array_splice($newitems, $i, 1);
-				array_unshift($newperms, $foo);
-				$return = array_merge($return, getPermutations($newitems, $newperms));
-			}
-		}
-		return $return;
-	}
-
 	function getAllRoutes($places) {
 		$routes = array();
 		foreach (getPermutations(array_keys($places)) as $journey) {
