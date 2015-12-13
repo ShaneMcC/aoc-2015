@@ -38,6 +38,15 @@
 	}
 
 	/**
+	 * Get the input as a single string.
+	 *
+	 * @return Whole file as a single string.
+	 */
+	function getInputContent() {
+		return file_get_contents(getInputFilename());
+	}
+
+	/**
 	 * Get the first line from the input.
 	 *
 	 * @return First line of input.
