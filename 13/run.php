@@ -37,6 +37,8 @@
 			array_unshift($p, $start);
 			$happiness = calculateHappiness($people, $p);
 
+			if (isDebug()) { echo "\t", 'Caclulated ', $happiness, ' happiness from seating order: ', implode(', ', $p), "\n"; }
+
 			if ($happiness > $best['happiness']) {
 				$best['happiness'] = $happiness;
 				$best['order'] = $p;
