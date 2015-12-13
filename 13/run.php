@@ -27,21 +27,26 @@
 		return $total;
 	}
 
-	$perms = getPermutations(array_keys($people));
+	function getBest($people) {
+		$perms = getPermutations(array_keys($people));
 
-	$bestPerm = array();
-	$bestHappiness = 0;
-	foreach ($perms as $p) {
-		$happiness = calculateHappiness($people, $p);
+		$best['order'] = array();
+		$best['happiness'] = 0;
+		foreach ($perms as $p) {
+			$happiness = calculateHappiness($people, $p);
 
-		if ($happiness > $bestHappiness) {
-			$bestHappiness = $happiness;
-			$bestPerm = $p;
+			if ($happiness > $best['happiness']) {
+				$best['happiness'] = $happiness;
+				$best['order'] = $p;
+			}
 		}
+
+		return $best;
 	}
 
-	echo 'Part 1: ', $bestHappiness, "\n";
 
+	$part1 = getBest($people);
+	echo 'Part 1: ', $part1['happiness'], "\n";
 
 	$people['You'] = array();
 	foreach (array_keys($people) as $p) {
@@ -49,17 +54,5 @@
 		$people[$p]['You'] = 0;
 	}
 
-	$perms = getPermutations(array_keys($people));
-
-	$bestPerm = array();
-	$bestHappiness = 0;
-	foreach ($perms as $p) {
-		$happiness = calculateHappiness($people, $p);
-
-		if ($happiness > $bestHappiness) {
-			$bestHappiness = $happiness;
-			$bestPerm = $p;
-		}
-	}
-
-	echo 'Part 3: ', $bestHappiness, "\n";
+	$part2 = getBest($people);
+	echo 'Part 2: ', $part2['happiness'], "\n";
