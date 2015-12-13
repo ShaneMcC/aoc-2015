@@ -53,7 +53,7 @@
 	 */
 	function getInputLine() {
 		$lines = getInputLines();
-		return trim($lines[0]);
+		return isset($lines[0]) ? trim($lines[0]) : '';
 	}
 
 	/**
