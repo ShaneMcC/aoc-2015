@@ -4,7 +4,6 @@
 	$input = getInputLines();
 
 	$people = array();
-
 	foreach ($input as $details) {
 		preg_match('#(.*) would (gain|lose) ([0-9]+) happiness units by sitting next to (.*).#SAD', $details, $m);
 		list($all, $who, $direction, $units, $person) = $m;

@@ -95,7 +95,11 @@
 	}
 
 	/**
-	 * get All the permutations of an array of items.
+	 * Get all the permutations of an array of items.
+	 *
+	 * @param $items Items to get permutations of.
+	 * @param $perms Ignore this param, used for recursion when caclulating permutations.
+	 * @return All permutations of $items;
 	 */
 	function getPermutations($items, $perms = array( )) {
 		if (empty($items)) {
