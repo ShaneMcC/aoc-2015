@@ -29,24 +29,29 @@
 		return $positions;
 	}
 
-	$olympicDistance = 2503;
-
-	$part1 = getPositions($reindeer, $olympicDistance);
-	$winner = array_slice($part1, -1, 1);
-	foreach ($winner as $name => $distance) { echo 'Part 1: ', $name, ' is at ', $distance, 'km', "\n"; }
-
-	$part2 = array();
-	for ($i = 1; $i < $olympicDistance; $i++) {
-		$positions = getPositions($reindeer, $i);
-		$max = max($positions);
-		foreach ($positions as $name => $pos) {
-			if ($pos == $max) {
-				if (!isset($part2[$name])) { $part2[$name] = 0; }
-				$part2[$name]++;
+	function getPoints($reindeer, $seconds) {
+		$points = array();
+		for ($i = 1; $i < $seconds; $i++) {
+			$positions = getPositions($reindeer, $i);
+			$max = max($positions);
+			foreach ($positions as $name => $pos) {
+				if ($pos == $max) {
+					if (!isset($points[$name])) { $points[$name] = 0; }
+					$points[$name]++;
+				}
 			}
 		}
+		asort($points);
+		return $points;
 	}
 
-	asort($part2);
+	$olympicTime = 2503;
+
+	echo 'After ', $olympicTime, ' seconds the results are: ', "\n";
+	$part1 = getPositions($reindeer, $olympicTime);
+	$winner = array_slice($part1, -1, 1);
+	foreach ($winner as $name => $distance) { echo "\t", $name, ' is at ', $distance, ' km', "\n"; }
+
+	$part2 = getPoints($reindeer, $olympicTime);
 	$winner = array_slice($part2, -1, 1);
-	foreach ($winner as $name => $points) { echo 'Part 2: ', $name, ' has ', $points, ' points', "\n"; }
+	foreach ($winner as $name => $points) { echo "\t", $name, ' has ', $points, ' points', "\n"; }
