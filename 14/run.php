@@ -14,52 +14,39 @@
 	}
 
 	function calculateDistance($reindeer, $seconds) {
-		$distance = 0;
-		$action = 'move';
-		$count = $reindeer['time'];
-		for ($i = 0; $i < $seconds; $i++) {
-			if ($action == 'move') {
-				$distance += $reindeer['speed'];
-			}
-
-			$count -= 1;
-
-			if ($count == 0 & $action == 'move') {
-				$action = 'rest';
-				$count = $reindeer['rest'];
-			} else if ($count == 0 & $action == 'rest') {
-				$action = 'move';
-				$count = $reindeer['time'];
-			}
-		}
-
+		$full = $reindeer['time'] + $reindeer['rest'];
+		$distance = $reindeer['speed'] * $reindeer['time'] * floor($seconds / $full);
+		$distance += $reindeer['speed'] * min(($seconds % $full), $reindeer['time']);
 		return $distance;
 	}
 
-	$positions = array();
-	foreach ($reindeer as $name => $r) {
-		$positions[$name] = calculateDistance($r, 2503);
-	}
-	asort($positions);
-	var_dump($positions);
-
-
-
-	$points = array();
-	for ($i = 1; $i < 2503; $i++) {
+	function getPositions($reindeer, $seconds) {
 		$positions = array();
 		foreach ($reindeer as $name => $r) {
-			$positions[$name] = calculateDistance($r, $i);
+			$positions[$name] = calculateDistance($r, $seconds);
 		}
+		asort($positions);
+		return $positions;
+	}
+
+	$olympicDistance = 2503;
+
+	$part1 = getPositions($reindeer, $olympicDistance);
+	$winner = array_slice($part1, -1, 1);
+	foreach ($winner as $name => $distance) { echo 'Part 1: ', $name, ' is at ', $distance, 'km', "\n"; }
+
+	$part2 = array();
+	for ($i = 1; $i < $olympicDistance; $i++) {
+		$positions = getPositions($reindeer, $i);
 		$max = max($positions);
 		foreach ($positions as $name => $pos) {
 			if ($pos == $max) {
-				if (!isset($points[$name])) { $points[$name] = 0; }
-				$points[$name]++;
+				if (!isset($part2[$name])) { $part2[$name] = 0; }
+				$part2[$name]++;
 			}
 		}
 	}
 
-	asort($points);
-	var_dump($points);
-
+	asort($part2);
+	$winner = array_slice($part2, -1, 1);
+	foreach ($winner as $name => $points) { echo 'Part 2: ', $name, ' has ', $points, ' points', "\n"; }
