@@ -41,7 +41,7 @@
 		return $points;
 	}
 
-	$olympicTime = 2503;
+	$olympicTime = isTest() ? 1000 : 2503;
 	$distances = getPositions($reindeer, $olympicTime);
 	$points = getPoints($reindeer, $olympicTime);
 	$winner1 = key(array_slice($distances, -1, 1));
