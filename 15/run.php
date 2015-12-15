@@ -31,46 +31,35 @@
 		return array($result, $score['calories']);
 	}
 
-	function getPossible4($sum) {
-		$possible = array();
-		for ($a = 0; $a < $sum; $a++) {
-			for ($b = 0; $b < $sum; $b++) {
-				for ($c = 0; $c < $sum; $c++) {
-					for ($d = 0; $d < $sum; $d++) {
-						$p = array($a, $b, $c, $d);
-						if (array_sum($p) == $sum) {
-							$possible[] = $p;
-						}
-					}
+	function getPossible($count, $sum) {
+		if ($count == 0) { return array(); }
+
+		$result = array();
+		for ($i = 0; $i <= $sum; $i++) {
+			$next = getPossible($count - 1, $sum - $i);
+			if (count($next) == 0) {
+				$add = array($i);
+				if (array_sum($add) == $sum) { $result[] = $add; }
+			} else {
+				for ($j = 0; $j < count($next); $j++) {
+					array_unshift($next[$j], $i);
+					$add = $next[$j];
+					if (array_sum($add) == $sum) { $result[] = $add; }
 				}
 			}
 		}
 
-		return $possible;
+		return $result;
 	}
 
-	function getPossible2($sum) {
-		$possible = array();
-		$remaining = $sum;
-		for ($a = 0; $a < $sum; $a++) {
-			for ($b = 0; $b < $sum; $b++) {
-				$p = array($a, $b);
-				if (array_sum($p) == $sum) {
-					$possible[] = $p;
-				}
-			}
-		}
-
-		return $possible;
-	}
+	$teaspoons = 100;
 
 	$best = 0;
 	$bestQuantities = array();
-
 	$best500 = 0;
 	$best500Quantities = array();
 
-	$possible = isTest() ? getPossible2(100) : getPossible4(100);
+	$possible = getPossible(count($substances), $teaspoons);
 
 	foreach ($possible as $p) {
 		$quantities = array_combine(array_keys($substances), $p);
