@@ -31,55 +31,66 @@
 		return array($result, $score['calories']);
 	}
 
+	/**
+	 * Get all the possible combinations of $count numbers that add up to $sum
+	 *
+	 * @param $count Amount of values required in sum.
+	 * @param $sum Sum we need to add up to
+	 * @return Array of possible combinations.
+	 */
 	function getPossible($count, $sum) {
+		global $__POSSIBLE;
+		if (isset($__POSSIBLE[$count][$sum])) { return $__POSSIBLE[$count][$sum]; }
 		if ($count == 0) { return array(); }
 
 		$result = array();
 		for ($i = 0; $i <= $sum; $i++) {
 			$next = getPossible($count - 1, $sum - $i);
 			if (count($next) == 0) {
-				$add = array($i);
-				if (array_sum($add) == $sum) { $result[] = $add; }
+				if ($i == $sum) { $result[] = array($i); }
 			} else {
 				for ($j = 0; $j < count($next); $j++) {
 					array_unshift($next[$j], $i);
-					$add = $next[$j];
-					if (array_sum($add) == $sum) { $result[] = $add; }
+					if (array_sum($next[$j]) == $sum) {
+						$result[] = $next[$j];
+					}
 				}
 			}
 		}
 
+		$__POSSIBLE[$count][$sum] = $result;
 		return $result;
 	}
 
-	$teaspoons = 100;
+	function getBest($substances, $teaspoons, $calorieRequirement = 0) {
 
-	$best = 0;
-	$bestQuantities = array();
-	$best500 = 0;
-	$best500Quantities = array();
+		$best = 0;
+		$bestQuantities = array();
+		$possible = getPossible(count($substances), $teaspoons);
 
-	$possible = getPossible(count($substances), $teaspoons);
-
-	foreach ($possible as $p) {
-		$quantities = array_combine(array_keys($substances), $p);
-		list($score, $calories) = calculateScore($substances, $quantities);
-		if ($score > $best) {
-			$best = $score;
-			$bestQuantities = $quantities;
+		foreach ($possible as $p) {
+			$quantities = array_combine(array_keys($substances), $p);
+			list($score, $calories) = calculateScore($substances, $quantities);
+			if ($score > $best && ($calorieRequirement == 0 || $calories == $calorieRequirement)) {
+				$best = $score;
+				$bestQuantities = $quantities;
+			}
 		}
 
-		if ($score > $best500 && $calories == 500) {
-			$best500 = $score;
-			$best500Quantities = $quantities;
-		}
+		return array($best, $bestQuantities);
 	}
 
+
+	$teaspoons = 100;
+	$calories = 500;
+
 	echo 'Part1', "\n";
-	var_dump($bestQuantities);
-	echo $best, "\n";
+	list($score, $quantities) = getBest($substances, $teaspoons);
+	print_r($quantities);
+	echo 'Score: ', $score, "\n";
 
 	echo "\n\n";
 	echo 'Part2', "\n";
-	var_dump($best500Quantities);
-	echo $best500, "\n";
+	list($score, $quantities) = getBest($substances, $teaspoons, $calories);
+	print_r($quantities);
+	echo 'Score: ', $score, "\n";
