@@ -33,16 +33,15 @@
 
 	function getPossible4($sum) {
 		$possible = array();
-		$remaining = $sum;
-		for ($a = 0; $a < $remaining; $a++) {
-			$remaining = $sum - $a;
-			for ($b = 0; $b < $remaining; $b++) {
-				$remaining = $sum - $a - $b;
-				for ($c = 0; $c < $remaining; $c++) {
-					$remaining = $sum - $a - $b - $c;
-					$d = $remaining;
-
-					$possible[] = array($a, $b, $c, $d);
+		for ($a = 0; $a < $sum; $a++) {
+			for ($b = 0; $b < $sum; $b++) {
+				for ($c = 0; $c < $sum; $c++) {
+					for ($d = 0; $d < $sum; $d++) {
+						$p = array($a, $b, $c, $d);
+						if (array_sum($p) == $sum) {
+							$possible[] = $p;
+						}
+					}
 				}
 			}
 		}
@@ -53,11 +52,13 @@
 	function getPossible2($sum) {
 		$possible = array();
 		$remaining = $sum;
-		for ($a = 0; $a < $remaining; $a++) {
-			$remaining = $sum - $a;
-			$b = $remaining;
-
-			$possible[] = array($a, $b);
+		for ($a = 0; $a < $sum; $a++) {
+			for ($b = 0; $b < $sum; $b++) {
+				$p = array($a, $b);
+				if (array_sum($p) == $sum) {
+					$possible[] = $p;
+				}
+			}
 		}
 
 		return $possible;
