@@ -2,6 +2,9 @@
 	/* Some of these are not memory efficient, so don't bother caring. */
 	ini_set('memory_limit', '-1');
 
+	/* Known Answers so far for comparing output after any changes. */
+	require_once(dirname(__FILE__) . '/answers.php');
+
 	/**
 	 * Get the filen to read input from.
 	 * This will return php://stdin if we have something passed on stdin,
