@@ -39,36 +39,22 @@
 	 * @return Array of possible combinations.
 	 */
 	function getPossible($count, $sum) {
-		global $__POSSIBLE;
-		if (isset($__POSSIBLE[$count][$sum])) { return $__POSSIBLE[$count][$sum]; }
-		if ($count == 0) { return array(); }
-
-		$result = array();
-		for ($i = 0; $i <= $sum; $i++) {
-			$next = getPossible($count - 1, $sum - $i);
-			if (count($next) == 0) {
-				if ($i == $sum) { $result[] = array($i); }
-			} else {
-				for ($j = 0; $j < count($next); $j++) {
-					array_unshift($next[$j], $i);
-					if (array_sum($next[$j]) == $sum) {
-						$result[] = $next[$j];
-					}
-				}
-			}
+	    if ($count == 1) {
+	        yield array($sum);
+	    } else {
+	        foreach (range(0, $sum) as $i) {
+	            foreach (getPossible($count - 1, $sum - $i) as $j) {
+	                yield array_merge(array($i), $j);
+	            }
+	        }
 		}
-
-		$__POSSIBLE[$count][$sum] = $result;
-		return $result;
 	}
 
 	function getBest($substances, $teaspoons, $calorieRequirement = 0) {
-
 		$best = 0;
 		$bestQuantities = array();
-		$possible = getPossible(count($substances), $teaspoons);
 
-		foreach ($possible as $p) {
+		foreach (getPossible(count($substances), $teaspoons) as $p) {
 			$quantities = array_combine(array_keys($substances), $p);
 			list($score, $calories) = calculateScore($substances, $quantities);
 			if ($score > $best && ($calorieRequirement == 0 || $calories == $calorieRequirement)) {
