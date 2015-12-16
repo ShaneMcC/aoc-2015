@@ -122,6 +122,26 @@
 	}
 
 	/**
+	 * Get all the possible combinations of $count numbers that add up to $sum
+	 *
+	 * @param $count Amount of values required in sum.
+	 * @param $sum Sum we need to add up to
+	 * @return Generator for all possible combinations.
+	 */
+	function getCombinations($count, $sum) {
+	    if ($count == 1) {
+			yield array($sum);
+	    } else {
+	        foreach (range(0, $sum) as $i) {
+	            foreach (getCombinations($count - 1, $sum - $i) as $j) {
+	                yield array_merge(array($i), $j);
+	            }
+	        }
+		}
+	}
+
+
+	/**
 	 * Get an ascii Wreath as a string.
 	 *
 	 * @param $colour Colourise the wreath.

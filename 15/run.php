@@ -31,30 +31,11 @@
 		return array($result, $score['calories']);
 	}
 
-	/**
-	 * Get all the possible combinations of $count numbers that add up to $sum
-	 *
-	 * @param $count Amount of values required in sum.
-	 * @param $sum Sum we need to add up to
-	 * @return Array of possible combinations.
-	 */
-	function getPossible($count, $sum) {
-	    if ($count == 1) {
-	        yield array($sum);
-	    } else {
-	        foreach (range(0, $sum) as $i) {
-	            foreach (getPossible($count - 1, $sum - $i) as $j) {
-	                yield array_merge(array($i), $j);
-	            }
-	        }
-		}
-	}
-
 	function getBest($substances, $teaspoons, $calorieRequirement = 0) {
 		$best = 0;
 		$bestQuantities = array();
 
-		foreach (getPossible(count($substances), $teaspoons) as $p) {
+		foreach (getCombinations(count($substances), $teaspoons) as $p) {
 			$quantities = array_combine(array_keys($substances), $p);
 			list($score, $calories) = calculateScore($substances, $quantities);
 			if ($score > $best && ($calorieRequirement == 0 || $calories == $calorieRequirement)) {
