@@ -140,6 +140,24 @@
 		}
 	}
 
+	/**
+	 * Get all the Sets of the given array.
+	 *
+	 * @param $array Array to get sets from.
+	 * @return Array of sets.
+	 */
+	function getAllSets($array) {
+		$result = array(array());
+
+		foreach ($array as $element) {
+			foreach ($result as $combination) {
+				$result[] = array_merge(array($element), $combination);
+			}
+		}
+
+		return $result;
+	}
+
 
 	/**
 	 * Get an ascii Wreath as a string.

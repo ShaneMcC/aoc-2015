@@ -11,21 +11,8 @@
 		$containers[] = $size;
 	}
 
-	function allSets($array) {
-		$result = array(array());
-
-		foreach ($array as $element) {
-			foreach ($result as $combination) {
-				$result[] = array_merge(array($element), $combination);
-			}
-		}
-
-		return $result;
-	}
-
-
 	$quantity = isTest() ? 25 : 150;
-	$validSets = array_filter(allSets($containers), function ($a) use ($quantity) { return array_sum($a) == $quantity; });
+	$validSets = array_filter(getAllSets($containers), function ($a) use ($quantity) { return array_sum($a) == $quantity; });
 	echo 'Part 1: ', "\n";
 	echo "\t", 'Valid Sets: ', count($validSets), "\n";
 
