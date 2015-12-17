@@ -1,15 +1,7 @@
 #!/usr/bin/php
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
-	$input = getInputLines();
-
-	$containers = array();
-	foreach ($input as $details) {
-		preg_match('#([0-9]+)#SADi', $details, $m);
-		list($all, $size) = $m;
-
-		$containers[] = $size;
-	}
+	$containers = getInputLines();
 
 	$quantity = isTest() ? 25 : 150;
 	$validSets = array_filter(getAllSets($containers), function ($a) use ($quantity) { return array_sum($a) == $quantity; });
