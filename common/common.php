@@ -98,6 +98,23 @@
 	}
 
 	/**
+	 * Generator to provide X/Y coordinates.
+	 * X is returned as the Key, Y as the value
+	 *
+	 * @param $startx Starting X value
+	 * @param $starty Starting Y value
+	 * @param $endx Ending X value (inclusive)
+	 * @param $endy Ending Y value (inclusive)
+	 */
+	function yieldXY($startx, $starty, $endx, $endy) {
+		for ($x = $startx; $x <= $endx; $x++) {
+			for ($y = $starty; $y <= $endy; $y++) {
+				yield $x => $y;
+			}
+		}
+	}
+
+	/**
 	 * Get all the permutations of an array of items.
 	 * (From: http://stackoverflow.com/a/13194803/310353)
 	 *

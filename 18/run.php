@@ -6,11 +6,9 @@
 
 	function getNeighbourCount($lights, $x, $y) {
 		$i = 0;
-		foreach (range($x - 1, $x + 1) as $x1) {
-			foreach (range($y - 1, $y + 1) as $y1) {
-				if (isset($lights[$x1][$y1]) && !($x1 == $x && $y1 == $y) && ($lights[$x1][$y1] == '#' || $lights[$x1][$y1] == '@')) {
-					$i++;
-				}
+		foreach (yieldXY($x-1, $y-1, $x+1, $y+1) as $x1 => $y1) {
+			if (isset($lights[$x1][$y1]) && !($x1 == $x && $y1 == $y) && ($lights[$x1][$y1] == '#' || $lights[$x1][$y1] == '@')) {
+				$i++;
 			}
 		}
 		return $i;
@@ -18,23 +16,16 @@
 
 	function advance(&$lights) {
 		$old = $lights;
-		for ($x = 0; $x < count($lights); $x++) {
-			for ($y = 0; $y < count($lights[$x]); $y++) {
-				if ($lights[$x][$y] == '@') { continue; } // Always On.
-
-				$n = getNeighbourCount($old, $x, $y);
-				$lights[$x][$y] = ($lights[$x][$y] == '.') ? (($n == 3) ? '#' : '.') : (($n == 2 || $n == 3) ? '#' : '.');
-			}
+		foreach (yieldXY(0, 0, count($lights) - 1, count($lights[0]) - 1) as $x => $y) {
+			if ($lights[$x][$y] == '@') { continue; }
+			$n = getNeighbourCount($old, $x, $y);
+			$lights[$x][$y] = ($lights[$x][$y] == '.') ? (($n == 3) ? '#' : '.') : (($n == 2 || $n == 3) ? '#' : '.');
 		}
 	}
 
 	function countLights($lights) {
 		$i = 0;
-		foreach ($lights as $x) {
-			foreach ($x as $l) {
-				if ($l != '.') { $i++; }
-			}
-		}
+		array_walk_recursive($lights, function($a) use (&$i) { if ($a != '.') { $i++; }; });
 		return $i;
 	}
 
