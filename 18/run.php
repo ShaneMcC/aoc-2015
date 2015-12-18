@@ -1,19 +1,13 @@
 #!/usr/bin/php
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
-	$input = getInputLines();
-
 	$lights = [];
-	$x = 0;
-	foreach ($input as $line) {
-		for ($y = 0; $y < strlen($line); $y++) { $lights[$x][$y] = $line[$y]; }
-		$x++;
-	}
+	foreach (getInputLines() as $line) { $lights[] = str_split($line); }
 
 	function getNeighbourCount($lights, $x, $y) {
 		$i = 0;
-		for ($x1 = $x-1; $x1 <= $x+1; $x1++) {
-			for ($y1 = $y-1; $y1 <= $y+1; $y1++) {
+		foreach (range($x - 1, $x + 1) as $x1) {
+			foreach (range($y - 1, $y + 1) as $y1) {
 				if (isset($lights[$x1][$y1]) && !($x1 == $x && $y1 == $y) && ($lights[$x1][$y1] == '#' || $lights[$x1][$y1] == '@')) {
 					$i++;
 				}
@@ -36,22 +30,16 @@
 
 	function countLights($lights) {
 		$i = 0;
-		for ($x = 0; $x < count($lights); $x++) {
-			for ($y = 0; $y < count($lights[$x]); $y++) {
-				if ($lights[$x][$y] != '.') { $i++; }
+		foreach ($lights as $x) {
+			foreach ($x as $l) {
+				if ($l != '.') { $i++; }
 			}
 		}
 		return $i;
 	}
 
 	function printLights($lights) {
-		for ($x = 0; $x < count($lights); $x++) {
-			echo "\t";
-			for ($y = 0; $y < count($lights[$x]); $y++) {
-				echo $lights[$x][$y];
-			}
-			echo "\n";
-		}
+		foreach ($lights as $l) { echo "\t", implode('', $l), "\n"; }
 	}
 
 	function run($lights, $times) {
