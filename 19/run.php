@@ -68,19 +68,18 @@
 	function getFromE($input, $molecules) {
 		$reverse = getReverseMapping($molecules);
 		$result = 0;
-		while (true) {
+		do {
+			$input = isset($out) ? $out : $input;
 			foreach ($reverse as $k => $v) {
 				if (strpos($input, $k) !== false) {
 					if (isDebug()) { echo $k, " => ", $v, "\n"; }
 					$out = preg_replace('/'.$k.'/', $v, $input, 1);
+					$result++;
 					break;
 				}
 			}
-			if ($input == $out) { break; }
-			$input = $out;
-			$result++;
 			if (isDebug()) { echo $input, "\n", $result, "\n"; }
-		}
+		} while (isset($out) && $input != $out);
 		return ($input == 'e') ? $result : -1;
 	}
 
