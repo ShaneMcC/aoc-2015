@@ -62,7 +62,8 @@
 	 *
 	 * @param $input Desired input.
 	 * @param $molecules Molecules that can make up $input
-	 * @return Count of replacements needed from 'e'.
+	 * @return Count of replacements needed from 'e', or -1 if we couldn't
+	 *         get to e
 	 */
 	function getFromE($input, $molecules) {
 		$reverse = getReverseMapping($molecules);
@@ -80,7 +81,7 @@
 			$result++;
 			if (isDebug()) { echo $input, "\n", $result, "\n"; }
 		}
-		return $result;
+		return ($input == 'e') ? $result : -1;
 	}
 
 	$replacements = getReplacements($medicine, $molecules);
