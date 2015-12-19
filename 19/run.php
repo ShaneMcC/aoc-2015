@@ -70,25 +70,16 @@
 
 		$result = 0;
 		while (true) {
-			$out = str_repeat('.', strlen($input));
 			foreach ($reverse as $k => $v) {
 				$p = strpos($input, $k);
 				if ($p !== false) {
 					if (isDebug()) { echo $k, " => ", $v, "\n"; }
-					for ($i = 0; $i < strlen($k); $i++) {
-						$z = $p+$i;
-						$out[$z] = ($i < strlen($v)) ? $v[$i] : ' ';
-					}
+					$out = preg_replace('/'.$k.'/', $v, $input, 1);
 					break;
 				}
 			}
-			for ($i = 0; $i < strlen($out); $i++) {
-				if ($out[$i] == '.') {
-					$out[$i] = $input[$i];
-				}
-			}
 			if ($input == $out) { break; }
-			$input = str_replace(' ', '', $out);
+			$input = $out;
 			$result++;
 
 			if (isDebug()) {
