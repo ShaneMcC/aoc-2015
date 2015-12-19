@@ -19,7 +19,7 @@
 	 * Reverse the molecule mappings.
 	 *
 	 * @param $input Input array of molecules.
-	 * @return Array of reverse mappings, sorted longest->shortest
+	 * @return Unsorted array of reverse mappings
 	 */
 	function getReverseMappings($input) {
 		$reverse = array();
@@ -28,7 +28,6 @@
 				$reverse[$res] = $start;
 			}
 		}
-		uksort($reverse, function($a,$b) { return strlen($b) - strlen($a); });
 		return $reverse;
 	}
 
@@ -68,29 +67,34 @@
 	 *
 	 * @param $input Desired input.
 	 * @param $molecules Molecules that can make up $input
+	 * @param $maxAttempts Maximum attempts to find an answer. (0 or less == keep going forever)
 	 * @return Count of replacements needed from 'e', or -1 if we couldn't
 	 *         get to e
 	 */
-	function getFromE($input, $molecules) {
+	function getFromE($input, $molecules, $maxAttempts = -1) {
 		$reverse = getReverseMappings($molecules);
-		$result = 0;
 		do {
-			$input = isset($out) ? $out : $input;
-			foreach ($reverse as $k => $v) {
-				if (strpos($input, $k) !== false) {
-					if (isDebug()) { echo $k, " => ", $v, "\n"; }
-					$out = preg_replace('/'.$k.'/', $v, $input, 1);
-					$result++;
-					break;
+			$result = 0;
+			do {
+				uksort($reverse, function($a,$b) { return rand(-10, 10); });
+				$compare = isset($out) ? $out : $input;
+				foreach ($reverse as $k => $v) {
+					if (strpos($compare, $k) !== false) {
+						if (isDebug()) { echo $k, " => ", $v, "\n"; }
+						$out = preg_replace('/'.$k.'/', $v, $compare, 1);
+						$result++;
+						break;
+					}
 				}
-			}
-			if (isDebug()) { echo $input, "\n", $result, "\n"; }
-		} while (isset($out) && $input != $out);
-		return ($input == 'e') ? $result : -1;
+				if (isDebug()) { echo $compare, "\n", $result, "\n"; }
+			} while (isset($out) && $compare != $out);
+			if ($compare == 'e') { return $result; } else { unset($out); }
+		} while (--$maxAttempts != 0);
+		return -1;
 	}
 
 	$replacements = getReplacements($medicine, $molecules);
 	echo "Part 1: ", count($replacements), "\n";
 
-	$count = getFromE($medicine, $molecules);
+	$count = getFromE($medicine, $molecules, 0);
 	echo 'Part 2: ', $count, "\n";
