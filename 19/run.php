@@ -3,8 +3,8 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
-	$molecules = array();
 	$medicine = '';
+	$molecules = array();
 	foreach ($input as $details) {
 		if (preg_match('#(.*) => (.*)#SADi', $details, $m)) {
 			list($all, $start, $replacement) = $m;
@@ -15,9 +15,15 @@
 		}
 	}
 
-	function getReverseMapping($molecules) {
+	/**
+	 * Reverse the molecule mappings.
+	 *
+	 * @param $input Input array of molecules.
+	 * @return Array of reverse mappings, sorted longest->shortest
+	 */
+	function getReverseMappings($input) {
 		$reverse = array();
-		foreach ($molecules as $start => $results) {
+		foreach ($input as $start => $results) {
 			foreach ($results as $res) {
 				$reverse[$res] = $start;
 			}
@@ -66,7 +72,7 @@
 	 *         get to e
 	 */
 	function getFromE($input, $molecules) {
-		$reverse = getReverseMapping($molecules);
+		$reverse = getReverseMappings($molecules);
 		$result = 0;
 		do {
 			$input = isset($out) ? $out : $input;
