@@ -17,19 +17,15 @@
 	    return $houses;
 	}
 
-	$houses = getHouses($input / 10, 10, 0);
-    foreach ($houses as $house => $count) {
-    	if ($count > $input) {
-    		echo 'Part 1: ', $house, "\n";
-    		break;
-    	}
-    }
+	function getBestHouse($wantedCount, $deliver = 10, $visitLimit = 0) {
+		$houses = getHouses($wantedCount / $deliver, $deliver, $visitLimit);
+	    foreach ($houses as $house => $count) {
+	    	if ($count > $wantedCount) {
+	    		return $house;
+	    	}
+	    }
+	    return -1;
+	}
 
-    $houses = getHouses($input / 10, 11, 50);
-    foreach ($houses as $house => $count) {
-    	if ($count > $input) {
-    		echo 'Part 2: ', $house, "\n";
-    		break;
-    	}
-    }
-
+	echo 'Part 1: ', getBestHouse($input, 10, 0), "\n";
+	echo 'Part 2: ', getBestHouse($input, 11, 50), "\n";
