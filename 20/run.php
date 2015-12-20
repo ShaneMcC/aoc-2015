@@ -5,10 +5,10 @@
 
 	function getHouses($maxHouses, $deliver = 10, $visitLimit = 0) {
 		$houses = array();
+		for ($h = 1; $h < $maxHouses; $h++) { $houses[$h] = 0; }
+
 		for ($elf = 1; $elf < $maxHouses; $elf++) {
 			for ($house = $elf; $house < $maxHouses; $house += $elf) {
-				if (!isset($houses[$house])) { $houses[$house] = 0; }
-
 				if ($visitLimit == 0 || $house < ($elf * $visitLimit)) {
 					$houses[$house] += $elf * $deliver;
 				}
@@ -19,11 +19,14 @@
 
 	function getBestHouse($wantedCount, $deliver = 10, $visitLimit = 0) {
 		$minElves = 3;
-		$houses = getHouses($wantedCount / ($deliver * $minElves), $deliver, $visitLimit);
-		foreach ($houses as $house => $count) {
-			if ($count > $wantedCount) {
-				return $house;
+		while ($minElves > 0) {
+			$houses = getHouses(floor($wantedCount / ($deliver * $minElves)), $deliver, $visitLimit);
+			foreach ($houses as $house => $count) {
+				if ($count > $wantedCount) {
+					return $house;
+				}
 			}
+			$minElves--;
 		}
 		return -1;
 	}
