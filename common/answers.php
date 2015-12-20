@@ -78,8 +78,8 @@
 	$answers[2][19] = 200;
 
 	// Day 20
-	$answers[1][20] = 0;
-	$answers[2][20] = 0;
+	$answers[1][20] = 786240;
+	$answers[2][20] = 831600;
 
 	// Day 21
 	$answers[1][21] = 0;
