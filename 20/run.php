@@ -11,7 +11,7 @@
 			for ($house = $elf; $house < $maxHouses; $house += $elf) {
 				if ($visitLimit == 0 || $house < ($elf * $visitLimit)) {
 					$houses[$house] += $elf * $deliver;
-				}
+				} else { continue 2; }
 			}
 		}
 		return $houses;
