@@ -56,32 +56,8 @@
 		return $damage;
 	}
 
-	function simulate($player, $boss) {
-		if (isDebug()) {
-			echo '==============================', "\n";
-			echo 'FIGHT: ', "\n";
-			print_r($player['Items']);
-			echo 'COST: ', getCost($player['Items']), ".\n";
-			echo '==============================', "\n";
-		}
-
-		while ($player['Hit Points'] > 0 && $boss['Hit Points'] > 0) {
-			$bossDamage = calculateHit($player, $boss);
-			$boss['Hit Points'] -= $bossDamage;
-			if (isDebug()) { echo 'Boss takes ', $bossDamage, ' Damage: ', $boss['Hit Points'], "\n"; }
-			if ($boss['Hit Points'] <= 0) {
-				if (isDebug()) { echo 'Player Wins', "\n"; }
-				return true;
-			}
-
-			$playerDamage = calculateHit($boss, $player);
-			$player['Hit Points'] -= $playerDamage;
-			if (isDebug()) { echo 'Player takes ', $playerDamage, ' Damage: ', $player['Hit Points'], "\n"; }
-			if ($player['Hit Points'] <= 0) {
-				if (isDebug()) { echo 'Boss Wins', "\n"; }
-				return false;
-			}
-		}
+	function isWinner($player, $boss) {
+		return ceil($player['Hit Points'] / max(1, calculateHit($boss, $player))) >= ceil($boss['Hit Points'] / max(1, calculateHit($player, $boss)));
 	}
 
 	function getCost($items) {
@@ -109,7 +85,6 @@
 		}
 	}
 
-
 	function bestCombination($shop, $player, $boss) {
 		$smallestCost = PHP_INT_MAX;
 		$bestItems = array();
@@ -117,7 +92,7 @@
 		foreach (getShopCombinations($shop) as $items) {
 			$player['Items'] = $items;
 			$cost = getCost($player['Items']);
-			if (simulate($player, $boss) && $cost < $smallestCost) {
+			if (isWinner($player, $boss) && $cost < $smallestCost) {
 				$smallestCost = $cost;
 				$bestItems = $items;
 			}
@@ -133,7 +108,7 @@
 		foreach (getShopCombinations($shop) as $items) {
 			$player['Items'] = $items;
 			$cost = getCost($player['Items']);
-			if (!simulate($player, $boss) && $cost > $biggestCost) {
+			if (!isWinner($player, $boss) && $cost > $biggestCost) {
 				$biggestCost = $cost;
 				$worstItems = $items;
 			}
