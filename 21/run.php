@@ -40,17 +40,12 @@
 	function calculateHit($attacker, $victim) {
 		$damage = $attacker['Damage'];
 		if (isset($attacker['Items'])) {
-			foreach ($attacker['Items'] as $item) {
-				$damage += $item['Damage'];
-			}
+			$damage += array_reduce($attacker['Items'], function($a, $b) { return $a + $b['Damage']; });
 		}
-
 
 		$damage -= $victim['Armor'];
 		if (isset($victim['Items'])) {
-			foreach ($victim['Items'] as $item) {
-				$damage -= $item['Armor'];
-			}
+			$damage -= array_reduce($victim['Items'], function($a, $b) { return $a + $b['Armor']; });
 		}
 
 		return $damage;
@@ -61,9 +56,7 @@
 	}
 
 	function getCost($items) {
-		$cost = 0;
-		foreach ($items as $item) { $cost += $item['Cost']; }
-		return $cost;
+		return array_reduce($items, function($a, $b) { return $a + $b['Cost']; });
 	}
 
 	function getShopCombinations($shop) {
