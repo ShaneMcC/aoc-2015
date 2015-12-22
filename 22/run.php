@@ -41,23 +41,23 @@
 		foreach ($target['Effects'] as $effect) {
 			if (isset($effect['Damage'])) {
 				$target['Hit Points'] -= $effect['Damage'];
-				if (isDebug()) { echo $effect['Name'], ' deals ', $effect['Damage'], ' damage;'; }
+				debugOut($effect['Name'], ' deals ', $effect['Damage'], ' damage;');
 			} else if (isset($effect['Regain'])) {
 				$target['Mana'] += $effect['Regain'];
-				if (isDebug()) { echo $effect['Name'], ' replenishes ', $effect['Regain'], ' mana;'; }
+				debugOut($effect['Name'], ' replenishes ', $effect['Regain'], ' mana;');
 			} else {
-				if (isDebug()) { echo $effect['Name'], ' is active;'; }
+				debugOut($effect['Name'], ' is active;');
 			}
 
 
 			if ($effect['Ticks'] > 1) {
 				$effect['Ticks']--;
 				$newEffects[$effect['Name']] = $effect;
-				if (isDebug()) { echo ' its timer is now ', $effect['Ticks'], '.', "\n"; }
+				debugOut(' its timer is now ', $effect['Ticks'], '.', "\n");
 			} else {
 				// Undo buffs.
 				if (isset($effect['Armor'])) { $target['Armor'] -= $effect['Armor']; }
-				if (isDebug()) { echo ' its timer has now expired.', "\n"; }
+				debugOut(' its timer has now expired.', "\n");
 			}
 		}
 		$target['Effects'] = $newEffects;
@@ -68,21 +68,21 @@
 		$damage = 0;
 		$heal = 0;
 		if ($spell['Mana'] > 0) {
-			if (isDebug()) { echo $source['Name'], ' casts ', $spell['Name']; }
+			debugOut($source['Name'], ' casts ', $spell['Name']);
 		} else {
-			if (isDebug()) { echo $source['Name'], ' attacks'; }
+			debugOut($source['Name'], ' attacks');
 		}
 		if (isset($spell['Ticks'])) {
 			// Add buffs.
 			if (isset($spell['Armor']) || isset($spell['Regain'])) {
 				if (isset($spell['Armor'])) {
 					$source['Armor'] += $spell['Armor'];
-					if (isDebug()) { echo ', adding ', $spell['Armor'], ' armor', "\n"; }
+					debugOut(', adding ', $spell['Armor'], ' armor', "\n");
 				}
-				if (isset($source['Effects'][$spell['Name']])) { if (isDebug()) { echo "\n"; } return FALSE; }
+				if (isset($source['Effects'][$spell['Name']])) { debugOut("\n"); return FALSE; }
 				$source['Effects'][$spell['Name']] = $spell;
 			} else {
-				if (isset($target['Effects'][$spell['Name']])) { if (isDebug()) { echo "\n"; } return FALSE; }
+				if (isset($target['Effects'][$spell['Name']])) { debugOut("\n"); return FALSE; }
 				$target['Effects'][$spell['Name']] = $spell;
 			}
 		} else {
@@ -90,18 +90,18 @@
 			if (isset($spell['Damage'])) { $damage += $spell['Damage']; }
 			if (isset($spell['Heal'])) { $heal += $spell['Heal']; }
 		}
-		if ($source['Mana'] < $spell['Mana']) { if (isDebug()) { echo "\n"; } return FALSE; }
+		if ($source['Mana'] < $spell['Mana']) { debugOut("\n"); return FALSE; }
 		$source['Mana'] -= $spell['Mana'];
 
 		if ($damage > 0) {
 			$target['Hit Points'] -= max(1, $damage - $target['Armor']);
-			if (isDebug()) { echo ', dealing ', max(1, $damage - $target['Armor']), ' damage'; }
+			debugOut(', dealing ', max(1, $damage - $target['Armor']), ' damage');
 		}
 		if ($heal > 0) {
 			$source['Hit Points'] += $heal;
-			if (isDebug()) { echo ', healing ', $heal, ' hit points'; }
+			debugOut(', healing ', $heal, ' hit points');
 		}
-		if (isDebug()) { echo "\n"; }
+		debugOut("\n");
 
 		return TRUE;
 	}
@@ -127,18 +127,18 @@
 
 			if ($hard) {
 				$player['Hit Points'] -= 1;
-				if ($player['Hit Points'] <= 0) { if (isDebug()) { echo 'Player died.', "\n"; } break; }
+				if ($player['Hit Points'] <= 0) { debugOut('Player died.', "\n"); break; }
 			}
 
 			tick($player);
-			if ($player['Hit Points'] <= 0) { if (isDebug()) { echo 'Player died.', "\n"; } break; }
+			if ($player['Hit Points'] <= 0) { debugOut('Player died.', "\n"); break; }
 			tick($boss);
-			if ($boss['Hit Points'] <= 0) { $result = true; if (isDebug()) { echo 'Boss died.', "\n"; } break; }
+			if ($boss['Hit Points'] <= 0) { $result = true; debugOut('Boss died.', "\n"); break; }
 
 
 			$castResult = cast($player, $boss, $playerSpell);
-			if ($boss['Hit Points'] <= 0) { $result = true; if (isDebug()) { echo 'Boss died.', "\n"; } break; }
-			if (!$castResult) { if (isDebug()) { echo 'Player lost by error.', "\n"; } break; }
+			if ($boss['Hit Points'] <= 0) { $result = true; debugOut('Boss died.', "\n"); break; }
+			if (!$castResult) { debugOut('Player lost by error.', "\n"); break; }
 			$casts[] = $playerSpell['Name'];
 
 
@@ -150,15 +150,15 @@
 			}
 
 			tick($player);
-			if ($player['Hit Points'] <= 0) { if (isDebug()) { echo 'Player died.', "\n"; } break; }
+			if ($player['Hit Points'] <= 0) { debugOut('Player died.', "\n"); break; }
 			tick($boss);
-			if ($boss['Hit Points'] <= 0) { $result = true; if (isDebug()) { echo 'Boss died.', "\n"; } break; }
+			if ($boss['Hit Points'] <= 0) { $result = true; debugOut('Boss died.', "\n"); break; }
 
 			$castResult = cast($boss, $player, $bossSpell);
-			if (!$castResult) { if (isDebug()) { echo 'Boss lost by error.', "\n"; } $result = true; break; }
-			if ($player['Hit Points'] <= 0) { if (isDebug()) { echo 'Player died.', "\n"; } break; }
+			if (!$castResult) { debugOut('Boss lost by error.', "\n"); $result = true; break; }
+			if ($player['Hit Points'] <= 0) { debugOut('Player died.', "\n"); break; }
 
-			if (isDebug()) { echo "\n"; }
+			debugOut("\n");
 			$turns++;
 		}
 
@@ -204,13 +204,13 @@
 			list($result, $manaCost, $turns, $casts) = simulate($player, $boss, $playerCasts, $bossCasts, $hard);
 
 			if ($result) {
-				if (isDebug()) { echo 'Won in ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n"; }
+				debugOut('Won in ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n");
 				if ($manaCost < $lowestMana) {
 					$lowestMana = $manaCost;
 					$bestSequence = $casts;
 				}
 			} else {
-				if (isDebug()) { echo 'Lost after ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n"; }
+				debugOut('Lost after ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n");
 			}
 		}
 

@@ -73,6 +73,15 @@
 	}
 
 	/**
+	 * Echo something if we are running in debug mode.
+	 */
+	function debugOut() {
+		if (isDebug()) {
+			foreach (func_get_args() as $arg) { echo $arg; }
+		}
+	}
+
+	/**
 	 * Are we running in test mode?
 	 *
 	 * Test mode reads from test.txt not input.txt by default.
