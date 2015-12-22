@@ -113,6 +113,7 @@
 		$turns = 0;
 		$result = false;
 		$manaCost = 0;
+		$casts = array();
 		while (true) {
 			$playerSpell = $spells[$playerCasts[$turns % count($playerCasts)]];
 			$bossSpell = $spells[$bossCasts[$turns % count($bossCasts)]];
@@ -138,6 +139,7 @@
 			$castResult = cast($player, $boss, $playerSpell);
 			if ($boss['Hit Points'] <= 0) { $result = true; if (isDebug()) { echo 'Boss died.', "\n"; } break; }
 			if (!$castResult) { if (isDebug()) { echo 'Player lost by error.', "\n"; } break; }
+			$casts[] = $playerSpell['Name'];
 
 
 			if (isDebug()) {
@@ -160,10 +162,10 @@
 			$turns++;
 		}
 
-		return array($result, $manaCost, $turns);
+		return array($result, $manaCost, $turns, $casts);
 	}
 
-	function generateCastSequence($length = 50) {
+	function generateCastSequence($length = 15) {
 		global $spells;
 
 		$sequence = array();
@@ -199,13 +201,13 @@
 		for ($i = 0; $i < $games; $i++) {
 			$playerCasts = generateCastSequence();
 			$bossCasts = array('Hit');
-			list($result, $manaCost, $turns) = simulate($player, $boss, $playerCasts, $bossCasts, $hard);
+			list($result, $manaCost, $turns, $casts) = simulate($player, $boss, $playerCasts, $bossCasts, $hard);
 
 			if ($result) {
 				if (isDebug()) { echo 'Won in ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n"; }
 				if ($manaCost < $lowestMana) {
 					$lowestMana = $manaCost;
-					$bestSequence = $playerCasts;
+					$bestSequence = $casts;
 				}
 			} else {
 				if (isDebug()) { echo 'Lost after ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n"; }
