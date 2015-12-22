@@ -161,14 +161,16 @@
 	 * Get all the Sets of the given array.
 	 *
 	 * @param $array Array to get sets from.
+	 * @param $maxLength Ignore sets larger than this size
 	 * @return Array of sets.
 	 */
-	function getAllSets($array) {
+	function getAllSets($array, $maxlength = PHP_INT_MAX) {
 		$result = array(array());
 
 		foreach ($array as $element) {
 			foreach ($result as $combination) {
-				$result[] = array_merge(array($element), $combination);
+				$set = array_merge(array($element), $combination);
+				if (count($set) <= $maxlength) { $result[] = $set; }
 			}
 		}
 
