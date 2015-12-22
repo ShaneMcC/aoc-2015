@@ -108,7 +108,7 @@
 	}
 
 
-	function simulate($player, $boss, $playerCasts, $bossCasts, $hard = false) {
+	function simulate($player, $boss, $playerCasts, $hard = false) {
 		global $spells;
 
 		$turns = 0;
@@ -116,8 +116,10 @@
 		$manaCost = 0;
 		$casts = array();
 		while (true) {
-			$playerSpell = $spells[$playerCasts[$turns % count($playerCasts)]];
-			$bossSpell = $spells[$bossCasts[$turns % count($bossCasts)]];
+			if ($turns >= count($playerCasts)) { debugOut('Ran out of casts.', "\n"); $result = false; break; }
+
+			$playerSpell = $spells[$playerCasts[$turns]];
+			$bossSpell = $spells['Hit'];
 			$manaCost += $playerSpell['Mana'];
 
 			if (isDebug()) {
@@ -201,8 +203,7 @@
 
 		for ($i = 0; $i < $games; $i++) {
 			$playerCasts = generateCastSequence();
-			$bossCasts = array('Hit');
-			list($result, $manaCost, $turns, $casts) = simulate($player, $boss, $playerCasts, $bossCasts, $hard);
+			list($result, $manaCost, $turns, $casts) = simulate($player, $boss, $playerCasts, $hard);
 
 			if ($result) {
 				debugOut('Won in ', $turns, ' turns with ', $manaCost, ' mana spent.', "\n");
