@@ -16,23 +16,23 @@
 	}
 	$boss['Effects'] = array();
 
-	$spells = array();
-
-	// Player Spells
-	$spells['Magic Missile'] = array('Name' => 'Magic Missile', 'Mana' => 53, 'Damage' => 4);
-	$spells['Drain'] = array('Name' => 'Drain', 'Mana' => 73, 'Damage' => 2, 'Heal' => 2);
-	$spells['Shield'] = array('Name' => 'Shield', 'Mana' => 113, 'Ticks' => 6, 'Armor' => 7);
-	$spells['Poison'] = array('Name' => 'Poison', 'Mana' => 173, 'Ticks' => 6, 'Damage' => 3);
-	$spells['Recharge'] = array('Name' => 'Recharge', 'Mana' => 229, 'Ticks' => 5, 'Regain' => 101);
-
-	// Boss Spell
-	$spells['Hit'] = array('Name' => 'Hit', 'Mana' => 0, 'Damage' => 8);
-
 	if (isTest()) {
 		$player = array('Name' => 'Player', 'Hit Points' => '10', 'Mana' => '250', 'Armor' => 0, 'Effects' => array());
 	} else {
 		$player = array('Name' => 'Player', 'Hit Points' => '50', 'Mana' => '500', 'Armor' => 0, 'Effects' => array());
 	}
+
+	$spells = array();
+
+	// Player Spells
+	$spells['Magic Missile'] = array('Name' => 'Magic Missile', 'Mana' => 53, 'Damage' => 4);
+	$spells['Drain'] = array('Name' => 'Drain', 'Mana' => 73, 'Damage' => 2, 'Heal' => 2);
+	$spells['Shield'] = array('Name' => 'Shield', 'Mana' => 113, 'Ticks' => 6, 'Armor' => 7, 'Buff' => true);
+	$spells['Poison'] = array('Name' => 'Poison', 'Mana' => 173, 'Ticks' => 6, 'Damage' => 3);
+	$spells['Recharge'] = array('Name' => 'Recharge', 'Mana' => 229, 'Ticks' => 5, 'Regain' => 101, 'Buff' => true);
+
+	// Boss Spell
+	$spells['Hit'] = array('Name' => 'Hit', 'Mana' => 0, 'Damage' => 8);
 
 
 	function tick(&$target) {
@@ -74,11 +74,12 @@
 		}
 		if (isset($spell['Ticks'])) {
 			// Add buffs.
-			if (isset($spell['Armor']) || isset($spell['Regain'])) {
-				if (isset($spell['Armor'])) {
-					$source['Armor'] += $spell['Armor'];
-					debugOut(', adding ', $spell['Armor'], ' armor', "\n");
-				}
+			if (isset($spell['Armor'])) {
+				$source['Armor'] += $spell['Armor'];
+				debugOut(', adding ', $spell['Armor'], ' armor', "\n");
+			}
+
+			if (isset($spell['Buff']) && $spell['Buff']) {
 				if (isset($source['Effects'][$spell['Name']])) { debugOut("\n"); return FALSE; }
 				$source['Effects'][$spell['Name']] = $spell;
 			} else {
