@@ -14,7 +14,7 @@
 	function getInputFilename() {
 		global $__CLIOPTS;
 
-		if (!posix_isatty(STDIN)) {
+		if (function_exists('posix_isatty') && !posix_isatty(STDIN)) {
 			return 'php://stdin';
 		} else if (isset($__CLIOPTS['file']) && file_exists($__CLIOPTS['file'])) {
 			return $__CLIOPTS['file'];
