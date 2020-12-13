@@ -1,4 +1,7 @@
 #!/bin/bash
+
+cd "$(dirname "$0")"
+
 BASEIMAGE=shanemcc/aoc-2015-05
 BASEDOCKERFILE="Dockerfile"
 
@@ -9,10 +12,10 @@ SHELL="0";
 
 while true; do
 	case "$1" in
-#		--jit|--hhvm)
-#			IMAGE=${BASEIMAGE}-${1/--/}
-#			DOCKERFILE=${BASEDOCKERFILE}-${1/--/}
-#			;;
+		--php7)
+			IMAGE=${BASEIMAGE}-${1/--/}
+			DOCKERFILE=${BASEDOCKERFILE}-${1/--/}
+			;;
 		--build)
 			FORCEBUILD="1";
 			;;
